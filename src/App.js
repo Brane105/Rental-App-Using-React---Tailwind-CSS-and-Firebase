@@ -7,13 +7,13 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 import Offers from "./pages/Offers";
+import Header from "./components/Header";
 function App() {
   return (
-    <>
-   <h1 className="text-3xl bg-blue-400 font-bold underline">
-    Rental App 
-   </h1>
+    <div className="antialiased bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400">
    <Router>
+    {/* headers */}
+    <Header/>
       <Routes>
         <Route path="/" element={<Home/>} />
         <Route path="/profile" element={<Profile/>} />
@@ -23,7 +23,7 @@ function App() {
         <Route path="/offers" element={<Offers/>} />
       </Routes>
    </Router>
-    </>
+   </div>
   );
 }
 
