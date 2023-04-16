@@ -10,7 +10,7 @@ import Offers from "./pages/Offers";
 import Header from "./components/Header";
 function App() {
   return (
-    <div className="antialiased bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400">
+    <>
    <Router>
     {/* headers */}
     <Header/>
@@ -23,7 +23,7 @@ function App() {
         <Route path="/offers" element={<Offers/>} />
       </Routes>
    </Router>
-   </div>
+   </>
   );
 }
 
