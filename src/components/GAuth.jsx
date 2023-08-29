@@ -17,7 +17,7 @@ export default function GAuth() {
       //checking if the user exists
       const docRef = doc(db,"users",user.uid);
       const docSnap = await getDoc(docRef);
-      console.log(docSnap);
+      // console.log(docSnap);
       if(!docSnap.exists()){
         await setDoc(docRef,{
           name :user.displayName,
