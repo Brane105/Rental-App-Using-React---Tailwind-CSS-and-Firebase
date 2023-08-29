@@ -1,7 +1,11 @@
 import * as re from 'react';
 import {AiFillEyeInvisible,AiFillEye} from 'react-icons/ai'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import GAuth from '../components/GAuth';
+import {createUserWithEmailAndPassword, getAuth,updateProfile} from "firebase/auth";
+import {db} from "../firebase";
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 export default function SignUp() {
   // create hook for show password 
   const [showPassword, setShowPassword] = re.useState(false)
@@ -12,7 +16,8 @@ export default function SignUp() {
     password : ""
   }); 
   // destructure this form-data 
-  const {name,email , password} = formData
+  const {name,email , password} = formData;
+  const navigate = useNavigate();
   function onChange(e){
     // console.log(e.target.value)
     setFormData((prevState)=>({
@@ -20,6 +25,31 @@ export default function SignUp() {
       [e.target.id] : e.target.value
     }))
   
+  }
+  async function onSubmit(e){
+  e.preventDefault();
+  try {
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(auth,email,password);
+    updateProfile(auth.currentUser,{
+      displayName : name
+    });
+    const user = userCredential.user;
+    const formDataCopy = {...formData};
+    delete formDataCopy.password;
+    formDataCopy.timestamp = serverTimestamp();
+    // console.log(formDataCopy)
+    await setDoc(doc(db,"users",user.uid),formDataCopy);
+    toast.success('Successfully Signed up !');
+    navigate("/");
+    // console.log(user);
+  } catch (error) {
+    // console.log(error)
+    // const errorCode = error.code;
+    // const errorMessage = error.message;
+    // console.log(errorCode+" "+errorMessage);
+    toast.error('Something went wrong please check the credentials !');
+  }
   }
     return (
     <section>
@@ -32,7 +62,7 @@ export default function SignUp() {
         className='w-full rounded-2xl '/>
         </div>
         <div className='w-full md:w-[67%] lg:w-[40%] lg:ml-20'>
-          <form>
+          <form onSubmit={onSubmit}>
           <input type="text" id='name' value={name} placeholder='enter full name here'
             onChange={onChange} className='w-full px-4 py-2 mb-5 text-xl text-gray-700 bg-white 
             border-gray-300 rounded-md transition ease-in-out'/>
