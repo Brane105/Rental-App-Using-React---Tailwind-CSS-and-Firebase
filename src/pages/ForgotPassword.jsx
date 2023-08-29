@@ -1,12 +1,24 @@
 import * as re from 'react';
 import { Link } from 'react-router-dom';
 import GAuth from '../components/GAuth';
+import {toast} from "react-toastify";
+import { getAuth, sendPasswordResetEmail } from '@firebase/auth';
 export default function ForgotPassword() {
   // ohhh this is an hook 
   const [email , setEmail] = re.useState(""); 
   function onChange(e){
     // console.log(e.target.value)
     setEmail(e.target.value);
+  }
+  async function onSubmit(e){
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth,email);
+      toast.success('Email was Sent.')
+    } catch (error) {
+      toast.error('Something Went Wrong, could not request password Request.')
+    }
   }
     return (
     <section>
@@ -19,7 +31,7 @@ export default function ForgotPassword() {
         className='w-full rounded-2xl '/>
         </div>
         <div className='w-full md:w-[67%] lg:w-[40%] lg:ml-20'>
-          <form>
+          <form onSubmit={onSubmit}>
             <input type="email" id='email' value={email} placeholder='enter email here'
             onChange={onChange} className='w-full px-4 py-2 text-xl text-gray-700 bg-white 
             border-gray-300 rounded-md transition ease-in-out'/>
