@@ -13,7 +13,7 @@ export default function GAuth() {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth,provider);
       const user = result.user;
-      console.log(user);
+      // console.log(user);
       //checking if the user exists
       const docRef = doc(db,"users",user.uid);
       const docSnap = await getDoc(docRef);

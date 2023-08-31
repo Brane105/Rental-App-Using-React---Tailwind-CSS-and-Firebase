@@ -3,7 +3,7 @@ import * as router from "react-router-dom";
 import { getAuth, updateProfile } from "firebase/auth";
 import { toast } from "react-toastify";
 import {db} from "../firebase";
-import { doc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 export default function profile() {
   const auth = getAuth();
   const navigate = router.useNavigate();

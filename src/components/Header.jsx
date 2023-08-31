@@ -1,12 +1,25 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as re from "react-router-dom";
-
+import {getAuth, onAuthStateChanged} from "firebase/auth"
 export default function Header() {
+  const [pageState , setPageState] = useState("Sign in");
   const location = re.useLocation();
   const navigate = re.useNavigate();
+  const auth = getAuth();
+  useEffect(()=> {
+    onAuthStateChanged(auth,(user)=>{
+      if(user){
+        setPageState('Profile');
+      }
+      else{
+        setPageState('Sign in');
+      }
+    })
+  },[auth])
   // console.log(location.pathname);
-  function mathRoute(route){
+  function matchRoute(route){
     if(route === location.pathname){
+      // console.log(route,location.pathname)
       return true
     }
   }
@@ -23,15 +36,16 @@ export default function Header() {
         </div>
         <div>
           <ul className='flex space-x-10 items-center'>
-            <li className={`cursor-pointer text-sm font-semibold text-grey-400 border-b-[3px] border-b-transparent ${mathRoute("/") && "text-black font-bold border-b-red-500"}`}
+            <li className={`cursor-pointer text-sm font-semibold text-grey-400 border-b-[3px] border-b-transparent ${matchRoute("/") && "text-black font-bold border-b-red-500"}`}
              onClick={()=> navigate('/')}>Home</li>
-            <li  className={`cursor-pointer text-sm font-semibold text-grey-400 border-b-[3px] border-b-transparent ${mathRoute("/offers") && "text-black font-bold border-b-red-500"}`}
+            <li  className={`cursor-pointer text-sm font-semibold text-grey-400 border-b-[3px] border-b-transparent ${matchRoute("/offers") && "text-black font-bold border-b-red-500"}`}
             onClick={()=> navigate('/offers')}>Offers</li>
-            <li  className={`cursor-pointer text-sm font-semibold text-grey-400 border-b-[3px] border-b-transparent ${mathRoute("/sign-in") && "text-black font-bold border-b-red-500"}`}
-            onClick={()=> navigate('/sign-in')}>Sign in</li>
-            <li>
+            <li  className={`cursor-pointer text-sm font-semibold text-grey-400 border-b-[3px] border-b-transparent ${(matchRoute("/sign-in") || matchRoute("/profile")) && "text-black font-bold border-b-red-500"}`}
+            onClick={()=> navigate('/profile')}>{pageState}</li>
+            {/* <li>
               <img src="https://blog.seagate.com/wp-content/uploads/2019/01/Level-Up-Gaming.jpg" alt='profile'
-               className="self-center w-10 h-10 rounded-full" /></li>
+               className="self-center w-10 h-10 rounded-full" />
+            </li> */}
           </ul>
         </div>
     </header>
