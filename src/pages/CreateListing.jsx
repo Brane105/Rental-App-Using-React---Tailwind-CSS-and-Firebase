@@ -34,7 +34,7 @@ export default function CreateListing() {
     address,description,offer,price,discount,latitude,longitude,images} = formData;
 
   function onChange(e){
-    console.log(e.target.value)
+    // console.log(e.target.value)
     let boolean = null; 
     if(e.target.value === 'true'){
         boolean = true;
@@ -42,7 +42,7 @@ export default function CreateListing() {
     if(e.target.value === 'false'){
         boolean = false;
     }
-    console.log(boolean);
+    // console.log(boolean);
     //files 
     if(e.target.files){
         setformData((prevState)=>({
@@ -68,7 +68,7 @@ export default function CreateListing() {
  async function onSubmit(e){
     e.preventDefault();
     setLoading(true);
-    console.log(formData)
+    // console.log(formData)
     if(+discount >= +price){
         setLoading(false);
         toast.error('Discounted price needs to be less than regular price.');
@@ -88,7 +88,7 @@ export default function CreateListing() {
             if (data && data.length > 0) {
                 geolocation.lat = parseFloat(data[0].lat);
                 geolocation.lng = parseFloat(data[0].lon);
-                console.log("geolocation:", geolocation);
+                // console.log("geolocation:", geolocation);
             } else {
               setLoading(false);
               setSelectedImage(null);
@@ -107,37 +107,33 @@ export default function CreateListing() {
         geolocation.lng = longitude;
     }
     async function storeImage(image) {
-      console.log(image)
+      // console.log(image)
       return new Promise((resolve, reject) => {
-        const storage = getStorage();
         const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
-        console.log(filename)
+        const storage = getStorage();
+        // console.log(filename)
+        // console.log(storage)
         const storageRef = ref(storage, filename);
+        // console.log(storageRef)
         const uploadTask = uploadBytesResumable(storageRef, image);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
+
+        // console.log(uploadTask)
+        uploadTask.on("state_changed",(snapshot) => {
+            const progress =(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            // console.log("Upload is " + progress + "% done");
             switch (snapshot.state) {
               case "paused":
-                console.log("Upload is paused");
+                // console.log("Upload is paused");
                 break;
               case "running":
-                console.log("Upload is running");
+                // console.log("Upload is running");
                 break;
             }
           },
           (error) => {
-            // Handle unsuccessful uploads
             reject(error);
           },
           () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               resolve(downloadURL);
             });
@@ -154,18 +150,19 @@ export default function CreateListing() {
       toast.error("Images not uploaded");
       return;
     });
-    console.log(imgUrls)
+    // console.log(imgUrls)
     const formDataCopy = {
       ...formData,
       imgUrls,
       geolocation,
-      timestamp:serverTimestamp()
+      timestamp:serverTimestamp(),
+      userRef:auth.currentUser.uid
     }
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discount;
     delete formDataCopy.latitude;
     delete formDataCopy.longitude;
-    console.log(formDataCopy)
+    // console.log(formDataCopy)
     const docRef = await addDoc(collection(db,"listings"),formDataCopy);
     setLoading(false);
     toast.success('Listing added successfully.');
