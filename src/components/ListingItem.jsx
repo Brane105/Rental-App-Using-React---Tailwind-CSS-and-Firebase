@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {MdLocationOn,MdEdit, } from "react-icons/md";
 import{FaTrash} from "react-icons/fa"
 export default function ListingItem({listing,id,onEdit,onDelete}) {
-  console.log(listing.timestamp)
+  // console.log(listing.timestamp)
   return (
     <li className="relative bg-white flex flex-col justify-between items-center shadow-md hover:shadow-xl rounded-md overflow-hidden transition-shadow duration-150 m-[10px]">
     <Link className="contents" to={`/category/${listing.type}/${id}`}>
@@ -28,7 +28,7 @@ export default function ListingItem({listing,id,onEdit,onDelete}) {
         </div>
         <p className="font-semibold m-0 text-xl truncate">{listing.name}</p>
         <p className="text-[#457b9d] mt-2 font-semibold">
-          $
+        &#8377;
           {listing.offer
             ? listing.discount
                 .toString()
